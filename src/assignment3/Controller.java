@@ -9,6 +9,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
@@ -69,11 +71,15 @@ public class Controller implements Initializable {
 	// listview
 	@FXML
 	private ListView<String> lsvViewDatabase;
+	//dialogue for messages
+	@FXML
+	private DialogPane diaAlert;
 
 	public Controller() {
 		/*
 		 * TODO: DELETE THIS COMMENT AND INITIALISE YOUR CONTROLLER HERE
 		 */
+		
 		this.model = new Model();
 	}
 
@@ -100,5 +106,8 @@ public class Controller implements Initializable {
 			}
 		});
 	}
+	/*
+	 * chooser.showOpenDialog(node.getScene().getWindow());
+	 */
 
 }

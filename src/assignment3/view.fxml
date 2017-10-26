@@ -3,6 +3,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextArea?>
@@ -107,7 +109,7 @@
                               <ButtonBar buttonMinWidth="50.0" prefHeight="40.0" prefWidth="200.0">
                                 <buttons>
                                     <TextField fx:id="txtSearchCharacter" prefHeight="25.0" prefWidth="266.0" promptText="Enter character name" />
-                                  <Button fx:id="btnSearchCharacter" maxWidth="100.0" minWidth="-Infinity" mnemonicParsing="false" prefWidth="100.0" text="Search" />
+                                  <Button fx:id="btnSearchCharacter" maxWidth="100.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#Controller" prefWidth="100.0" text="Search" />
                                 </buttons>
                                  <padding>
                                     <Insets right="10.0" />
@@ -135,12 +137,12 @@
                      <children>
                         <HBox alignment="CENTER_LEFT" prefHeight="159.0" prefWidth="654.0">
                            <children>
-                              <ImageView fitHeight="161.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="imvCharacterImage" fitHeight="161.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/default.png" />
                                  </image>
                               </ImageView>
-                              <Label alignment="CENTER" prefHeight="81.0" prefWidth="445.0" text="&lt;Character Name&gt;">
+                              <Label fx:id="lblCharacterName" alignment="CENTER" prefHeight="81.0" prefWidth="445.0" text="&lt;Character Name&gt;">
                                  <font>
                                     <Font size="40.0" />
                                  </font>
@@ -189,7 +191,7 @@
                               <Insets left="60.0" right="60.0" />
                            </VBox.margin>
                         </GridPane>
-                        <Button fx:id="btnSaveCharacterChanges" mnemonicParsing="false" text="Save Character Changes">
+                        <Button fx:id="btnSaveCharacter" mnemonicParsing="false" text="Save Character Changes">
                            <VBox.margin>
                               <Insets left="150.0" top="15.0" />
                            </VBox.margin>
@@ -203,5 +205,10 @@
                      </padding>
                   </VBox>
                </children></AnchorPane>
+      <DialogPane fx:id="diaAlert" headerText="Alert" layoutY="275.0" prefHeight="124.0" prefWidth="404.0" visible="false" AnchorPane.bottomAnchor="301.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="296.0" AnchorPane.topAnchor="275.0">
+         <buttonTypes>
+            <ButtonType fx:constant="CLOSE" />
+         </buttonTypes>
+      </DialogPane>
    </children>
 </AnchorPane>
