@@ -2,6 +2,7 @@ package assignment3;
 
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.collections.ObservableList;
@@ -79,7 +80,7 @@ public class Controller implements Initializable {
 		/*
 		 * TODO: DELETE THIS COMMENT AND INITIALISE YOUR CONTROLLER HERE
 		 */
-		
+
 		this.model = new Model();
 	}
 
@@ -95,63 +96,93 @@ public class Controller implements Initializable {
 		btnClearSearch.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				//add code here!
+				// add code here!
 			}
 		});
 	}
+
 	private void handleLoadDatabaseAction() {
 		btnLoadDatabase.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				String filename = txtFilename.getText();
-				try{
-					//load database
+				try {
+					// load database
 					model.loadDatabase(filename);
-					//populate listview with items
+					// populate listview with items
 					lsvViewDatabase.setItems(model.getAvailableCharacters());
-					
-				}
-				catch(FileNotFoundException e){
+
+				} catch (FileNotFoundException e) {
 					errorAlert("File not found. Please try again.");
-				}
-				catch(Exception e){
+				} catch (Exception e) {
 					errorAlert(e.getMessage());
 				}
 			}
 		});
 	}
+
 	private void handleSaveDatabaseAction() {
 		btnSaveDatabase.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				String filename = txtFilename.getText();
-				try{
-					//save active database to file
+				try {
+					// save active database to file
 					model.saveDatabase();
-					
-				}
-				catch(Exception e){
+
+				} catch (Exception e) {
 					errorAlert(e.getMessage());
 				}
 			}
 		});
 	}
+
 	private void handleSearchCharacterAction() {
 		btnSearchCharacter.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				//add code here!
+				// add code here!
 			}
 		});
 	}
-	private void updateAll(){
-		//updates all database and character info in the UI
+
+	private void updateAll() {
+		// updates all database and character info in the UI
+		lsvViewDatabase.setItems(model.getAvailableCharacters());
+		if (model.hasSelectedCharacter()) {
+			// update all info on character
+			txtDescription.setText(model.getSelectedCharacterDescription());
+			setTraits();
+			lblCharacterName.setText(model.getSelectedCharacterName());
+			if (model.isSelectedCharacterSuperCharacter()) {
+
+			} else {
+				txtPowerLevel.setText("Not applicable");
+				txtPowers.setText("Not applicable");
+			}
+
+		}
 	}
-	private void errorAlert(String message){
+
+	private void errorAlert(String message) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setHeaderText("Error");
 		alert.setContentText(message);
 		alert.showAndWait();
+	}
+
+	private void setTraits() {
+		// I went for a messy approach here :(
+		ArrayList<String> traits = model.getSelectedCharacterTraits();
+		int size = traits.size();
+		String newLine = System.getProperty("line.separator");
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < size; i++) {
+			sb.append(traits.get(i));
+			if (i != size - 1)
+				sb.append(newLine);
+		}
+		txtTraits.setText(sb.toString());
 	}
 	/*
 	 * chooser.showOpenDialog(node.getScene().getWindow());

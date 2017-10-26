@@ -22,6 +22,10 @@ public class Model {
 	public boolean isSelectedCharacterSuperCharacter() {
 		return selectedCharacter instanceof SuperCharacter;
 	}
+
+	public boolean hasSelectedCharacter() {
+		return selectedCharacter != null;
+	}
 	/*
 	 * TODO: INVARIANT GOES HERE
 	 */
@@ -57,44 +61,45 @@ public class Model {
 	public void setCharacterDescription(String description) {
 		selectedCharacter.setDescription(description);
 	}
-	public void setSuperCharacterPowerRanking(int powerLevel) throws IllegalPowerRankingException{
-		((SuperCharacter)selectedCharacter).setPowerRanking(powerLevel);
+
+	public void setSuperCharacterPowerRanking(int powerLevel) throws IllegalPowerRankingException {
+		((SuperCharacter) selectedCharacter).setPowerRanking(powerLevel);
 	}
+
 	public ArrayList<String> getSelectedCharacterTraits() {
 		return new ArrayList<String>(selectedCharacter.getTraits());
 	}
 
 	public void setSelectedCharacterTraits(ArrayList<String> traits) {
-		//remove all traits, then add these new traits provided from view>controller
-		for(String trait : selectedCharacter.getTraits())
-		{
+		// remove all traits, then add these new traits provided from
+		// view>controller
+		for (String trait : selectedCharacter.getTraits()) {
 			selectedCharacter.removeTrait(trait);
 		}
-		for(String trait : traits)
-		{
+		for (String trait : traits) {
 			selectedCharacter.addTrait(trait);
 		}
 	}
+
 	/**
 	 * @requires Selected character to be a SuperCharacter
-	 * @param powers The list of powers to replacing the existing set.
+	 * @param powers
+	 *            The list of powers to replacing the existing set.
 	 */
 	public void setSelectedSuperCharacterPowers(ArrayList<String> powers) {
-		//essentially the same as traits
-		SuperCharacter superChar = ((SuperCharacter)selectedCharacter);
-		for(String power : superChar.getPowers())
-		{
+		// essentially the same as traits
+		SuperCharacter superChar = ((SuperCharacter) selectedCharacter);
+		for (String power : superChar.getPowers()) {
 			superChar.removePower(power);
 		}
-		for(String power : powers)
-		{
+		for (String power : powers) {
 			superChar.addPower(power);
 		}
 	}
 
 	/**
 	 * @requires Requires the selectedCharacter to be a supercharacter
-	 * @return Returns 
+	 * @return Returns
 	 */
 	public ArrayList<String> getSelectedSuperCharacterPowers() {
 		return new ArrayList<String>(((SuperCharacter) selectedCharacter).getPowers());
