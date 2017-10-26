@@ -113,14 +113,18 @@ public class Model {
 		return new ArrayList<String>(((SuperCharacter) selectedCharacter).getPowers());
 	}
 
-	public void createCharacter(String name) {
+	public boolean createCharacter(String name) {
 		Character character = new Character(name, "");
-		selectedCharacter = character;
-		activeDatabase.add(character);
-		availableCharacters.add(character.name);
+		boolean result = activeDatabase.search(name) != null;
+		if (result) {
+			activeDatabase.add(character);
+			selectedCharacter = character;
+			availableCharacters.add(character.name);
+		}
+		return result;
 	}
-	public void createDatabase(String filePath) throws IOException
-	{
+
+	public void createDatabase(String filePath) throws IOException {
 		CharacterDatabase db = new CharacterDatabase(filePath);
 		activeDatabase = db;
 		db.save();
@@ -140,11 +144,20 @@ public class Model {
 		selectedCharacter = null;
 	}
 
-	public void createSuperCharacter(String name) throws IllegalPowerRankingException {
+	public boolean createSuperCharacter(String name) throws IllegalPowerRankingException {
 		Character character = new SuperCharacter(name, "", 5);
-		selectedCharacter = character;
-		activeDatabase.add(character);
-		availableCharacters.add(character.name);
+		boolean result = activeDatabase.search(name) != null;
+		if (result) {
+			selectedCharacter = character;
+			activeDatabase.add(character);
+			availableCharacters.add(character.name);
+		}
+		return result;
+	}
+	public void deleteCharacter(){
+		availableCharacters.removeIf(c -> c.equals(selectedCharacter.getName()));
+		activeDatabase.remove(selectedCharacter);
+		clearSelectedCharacter();
 	}
 
 	public void saveDatabase() throws IOException {

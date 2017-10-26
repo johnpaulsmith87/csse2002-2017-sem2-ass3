@@ -81,10 +81,6 @@ public class Controller implements Initializable {
 	private static final String newLine = System.getProperty("line.separator");
 
 	public Controller() {
-		/*
-		 * TODO: DELETE THIS COMMENT AND INITIALISE YOUR CONTROLLER HERE
-		 */
-
 		this.model = new Model();
 	}
 
@@ -96,8 +92,15 @@ public class Controller implements Initializable {
 		handleSaveDatabaseAction();
 		handleSearchCharacterAction();
 		handleCreateDatabaseAction();
+		handleCreateCharacterAction();
+		handleCreateSuperCharacterAction();
+		handleDeleteCharacterAction();
 	}
 
+	/*
+	 * / TODO: **fix search**, finish up all the handles, test, comment &
+	 * submit!
+	 */
 	private void handleClearSearchAction() {
 		btnClearSearch.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -144,7 +147,7 @@ public class Controller implements Initializable {
 		});
 	}
 
-	private void handleCreateDatabaseAction(){	
+	private void handleCreateDatabaseAction() {
 		btnCreateDatabase.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -159,19 +162,37 @@ public class Controller implements Initializable {
 			}
 		});
 	}
-	private void handleCreateCharacterAction(){	
+
+	private void handleCreateCharacterAction() {
 		btnCreateCharacter.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				if(model.hasActiveDatabase())
-				{
-					
-				}
-				else
-					infoAlert("You must have an open database to create a character","No open database");
+				String name = txtCreateCharacterName.getText();
+				if (model.hasActiveDatabase() && name != null && model.createCharacter(name)) {
+					updateAll();
+				} else
+					infoAlert("You must have an open database to create a character", "No open database");
 			}
 		});
 	}
+
+	private void handleCreateSuperCharacterAction() {
+		btnCreateSuperCharacter.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				String name = txtCreateCharacterName.getText();
+				try {
+					if (model.hasActiveDatabase() && name != null && model.createSuperCharacter(name))
+						updateAll();
+					else
+						infoAlert("You must have an open database to create a character", "No open database");
+				} catch (IllegalPowerRankingException e) {
+					errorAlert(e.getMessage(), "Illegal Power Ranking");
+				}
+			}
+		});
+	}
+
 	private void handleSearchCharacterAction() {
 		btnSearchCharacter.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -179,6 +200,21 @@ public class Controller implements Initializable {
 				if (model.hasActiveDatabase() && !model.searchSuccess(txtSearchCharacter.getText()))
 					infoAlert("No character found matching: " + txtSearchCharacter.getText(), "No Match!");
 				updateAll();
+			}
+		});
+	}
+
+	private void handleDeleteCharacterAction() {
+		btnDeleteCharacter.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if(model.hasActiveDatabase() && model.hasSelectedCharacter())
+				{
+					model.deleteCharacter();
+					updateAll();
+				}
+				else
+					infoAlert("You must have a character selected to delete","No character selected");
 			}
 		});
 	}
@@ -268,10 +304,9 @@ public class Controller implements Initializable {
 	}
 
 	private ArrayList<String> getPowers() {
-		// parse the trait text box by line and add each string to a list
+		// same as getTraits
 		String rawPowersText = txtPowers.getText();
 		ArrayList<String> result = new ArrayList<String>();
-		// we need to remove any possible empty or whitespace only strings!
 		for (String rawPower : rawPowersText.split(newLine + "+")) {
 			String trimmed = rawPower.trim();
 			if (!trimmed.isEmpty())
