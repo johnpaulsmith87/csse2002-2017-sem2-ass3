@@ -2,15 +2,16 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="assignment3.Controller">
@@ -29,69 +30,95 @@
                       <RowConstraints maxHeight="443.0" minHeight="10.0" prefHeight="243.5" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <StackPane alignment="TOP_CENTER" prefHeight="150.0" prefWidth="200.0">
+                        <Label alignment="TOP_LEFT" text="Character Editor" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+                           <font>
+                              <Font size="23.0" />
+                           </font>
+                        </Label>
+                        <GridPane prefHeight="92.0" prefWidth="294.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="94.5" minHeight="55.0" percentHeight="100.0" prefHeight="77.5" />
+                           </rowConstraints>
                            <children>
-                              <Label text="Character Editor">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
+                              <Label text="Load a database file" GridPane.halignment="CENTER">
+                                 <GridPane.margin>
+                                    <Insets bottom="25.0" />
+                                 </GridPane.margin>
                               </Label>
-                              <GridPane prefHeight="92.0" prefWidth="294.0">
-                                <columnConstraints>
-                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                </columnConstraints>
-                                <rowConstraints>
-                                  <RowConstraints maxHeight="94.5" minHeight="55.0" percentHeight="100.0" prefHeight="77.5" />
-                                </rowConstraints>
-                                 <StackPane.margin>
+                              <Button id="btnLoadDatabase" mnemonicParsing="false" text="Load Database" GridPane.halignment="CENTER">
+                                 <GridPane.margin>
                                     <Insets top="25.0" />
-                                 </StackPane.margin>
-                                 <children>
-                                    <Label text="Load a database file" GridPane.halignment="CENTER">
-                                       <GridPane.margin>
-                                          <Insets bottom="25.0" />
-                                       </GridPane.margin>
-                                    </Label>
-                                    <Button mnemonicParsing="false" text="Load Database" GridPane.halignment="CENTER">
-                                       <GridPane.margin>
-                                          <Insets top="25.0" />
-                                       </GridPane.margin>
-                                    </Button>
-                                    <Label text="Create a new database" GridPane.columnIndex="1" GridPane.halignment="CENTER">
-                                       <GridPane.margin>
-                                          <Insets bottom="25.0" />
-                                       </GridPane.margin></Label>
-                                    <Button mnemonicParsing="false" text="Save Database" GridPane.halignment="CENTER">
-                                       <GridPane.margin>
-                                          <Insets top="85.0" />
-                                       </GridPane.margin>
-                                    </Button>
-                                    <TextField promptText="Filename" GridPane.columnIndex="1">
-                                       <GridPane.margin>
-                                          <Insets left="5.0" right="5.0" top="25.0" />
-                                       </GridPane.margin>
-                                    </TextField>
-                                    <Button mnemonicParsing="false" text="Create Database" GridPane.columnIndex="1" GridPane.halignment="CENTER">
-                                       <GridPane.margin>
-                                          <Insets top="85.0" />
-                                       </GridPane.margin>
-                                    </Button>
-                                 </children>
-                              </GridPane>
+                                 </GridPane.margin>
+                              </Button>
+                              <Label text="Create a new database" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                                 <GridPane.margin>
+                                    <Insets bottom="25.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Button id="btnSaveDatabase" mnemonicParsing="false" text="Save Database" GridPane.halignment="CENTER">
+                                 <GridPane.margin>
+                                    <Insets top="85.0" />
+                                 </GridPane.margin>
+                              </Button>
+                              <TextField id="txtFilename" promptText="Filename" GridPane.columnIndex="1">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" right="5.0" top="25.0" />
+                                 </GridPane.margin>
+                              </TextField>
+                              <Button id="btnCreateDatabase" mnemonicParsing="false" text="Create Database" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                                 <GridPane.margin>
+                                    <Insets top="85.0" />
+                                 </GridPane.margin>
+                              </Button>
                            </children>
-                        </StackPane>
-                        <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                        </GridPane>
+                        <ListView id="lsvListCharacters" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </GridPane.margin>
-                        </TextArea>
-                        <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="2" />
+                        </ListView>
+                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.rowIndex="2">
+                           <children>
+                              <Label text="Character Creation">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </Label>
+                              <TextField id="txtNewCharName" promptText="Enter character name">
+                                 <VBox.margin>
+                                    <Insets left="50.0" right="50.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <ButtonBar prefHeight="40.0" prefWidth="200.0">
+                                <buttons>
+                                    <Button id="btnCreateCharacter" mnemonicParsing="false" text="Create Character" />
+                                  <Button id="btnCreateSuperCharacter" mnemonicParsing="false" text="Create Super Character" />
+                                </buttons>
+                                 <padding>
+                                    <Insets right="25.0" />
+                                 </padding>
+                              </ButtonBar>
+                              <Label text="Search for a character by name" />
+                              <ButtonBar buttonMinWidth="50.0" prefHeight="40.0" prefWidth="200.0">
+                                <buttons>
+                                    <TextField prefHeight="25.0" prefWidth="266.0" promptText="Enter character name" />
+                                  <Button maxWidth="100.0" minWidth="-Infinity" mnemonicParsing="false" prefWidth="100.0" text="Search" />
+                                </buttons>
+                                 <padding>
+                                    <Insets right="10.0" />
+                                 </padding>
+                              </ButtonBar>
+                           </children>
+                        </VBox>
                      </children>
                   </GridPane>
                </children>
             </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="698.0" prefWidth="669.0" />
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="698.0" prefWidth="613.0" />
         </items>
       </SplitPane>
    </children>
