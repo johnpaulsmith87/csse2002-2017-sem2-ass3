@@ -57,18 +57,44 @@ public class Model {
 	public void setCharacterDescription(String description) {
 		selectedCharacter.setDescription(description);
 	}
-
+	public void setSuperCharacterPowerRanking(int powerLevel) throws IllegalPowerRankingException{
+		((SuperCharacter)selectedCharacter).setPowerRanking(powerLevel);
+	}
 	public ArrayList<String> getSelectedCharacterTraits() {
 		return new ArrayList<String>(selectedCharacter.getTraits());
 	}
 
 	public void setSelectedCharacterTraits(ArrayList<String> traits) {
-		//remove all traits, then add these new traits - doesn't care if it's the same!
+		//remove all traits, then add these new traits provided from view>controller
+		for(String trait : selectedCharacter.getTraits())
+		{
+			selectedCharacter.removeTrait(trait);
+		}
+		for(String trait : traits)
+		{
+			selectedCharacter.addTrait(trait);
+		}
+	}
+	/**
+	 * @requires Selected character to be a SuperCharacter
+	 * @param powers
+	 */
+	public void setSelectedSuperCharacterPowers(ArrayList<String> powers) {
+		//essentially the same as traits
+		SuperCharacter superChar = ((SuperCharacter)selectedCharacter);
+		for(String power : superChar.getPowers())
+		{
+			superChar.removePower(power);
+		}
+		for(String power : powers)
+		{
+			superChar.addPower(power);
+		}
 	}
 
 	/**
 	 * @requires Requires the selectedCharacter to be a supercharacter
-	 * @return
+	 * @return Returns 
 	 */
 	public ArrayList<String> getSelectedSuperCharacterPowers() {
 		return new ArrayList<String>(((SuperCharacter) selectedCharacter).getPowers());

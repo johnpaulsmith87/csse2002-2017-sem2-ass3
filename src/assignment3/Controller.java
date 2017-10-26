@@ -1,5 +1,6 @@
 package assignment3;
 
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -8,6 +9,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
@@ -28,7 +31,7 @@ public class Controller implements Initializable {
 
 	// text fields
 	@FXML
-	private TextField txtCreateDatabase;
+	private TextField txtFilename;
 	@FXML
 	private TextField txtCreateCharacterName;
 	@FXML
@@ -71,9 +74,6 @@ public class Controller implements Initializable {
 	// listview
 	@FXML
 	private ListView<String> lsvViewDatabase;
-	//dialogue for messages
-	@FXML
-	private DialogPane diaAlert;
 
 	public Controller() {
 		/*
@@ -87,7 +87,8 @@ public class Controller implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		handleClearSearchAction();
 		handleSearchCharacterAction();
-		
+		handleLoadDatabaseAction();
+		handleSaveDatabaseAction();
 	}
 
 	private void handleClearSearchAction() {
@@ -98,6 +99,43 @@ public class Controller implements Initializable {
 			}
 		});
 	}
+	private void handleLoadDatabaseAction() {
+		btnLoadDatabase.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				String filename = txtFilename.getText();
+				try{
+					//load database
+					model.loadDatabase(filename);
+					//populate listview with items
+					lsvViewDatabase.setItems(model.getAvailableCharacters());
+					
+				}
+				catch(FileNotFoundException e){
+					errorAlert("File not found. Please try again.");
+				}
+				catch(Exception e){
+					errorAlert(e.getMessage());
+				}
+			}
+		});
+	}
+	private void handleSaveDatabaseAction() {
+		btnSaveDatabase.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				String filename = txtFilename.getText();
+				try{
+					//save active database to file
+					model.saveDatabase();
+					
+				}
+				catch(Exception e){
+					errorAlert(e.getMessage());
+				}
+			}
+		});
+	}
 	private void handleSearchCharacterAction() {
 		btnSearchCharacter.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -105,6 +143,15 @@ public class Controller implements Initializable {
 				//add code here!
 			}
 		});
+	}
+	private void updateAll(){
+		//updates all database and character info in the UI
+	}
+	private void errorAlert(String message){
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setHeaderText("Error");
+		alert.setContentText(message);
+		alert.showAndWait();
 	}
 	/*
 	 * chooser.showOpenDialog(node.getScene().getWindow());
