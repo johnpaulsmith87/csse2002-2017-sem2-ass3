@@ -1,6 +1,7 @@
 package assignment3;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -94,6 +95,7 @@ public class Controller implements Initializable {
 		handleLoadDatabaseAction();
 		handleSaveDatabaseAction();
 		handleSearchCharacterAction();
+		handleCreateDatabaseAction();
 	}
 
 	private void handleClearSearchAction() {
@@ -131,7 +133,6 @@ public class Controller implements Initializable {
 		btnSaveDatabase.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				String filename = txtFilename.getText();
 				try {
 					// save active database to file
 					model.saveDatabase();
@@ -143,6 +144,34 @@ public class Controller implements Initializable {
 		});
 	}
 
+	private void handleCreateDatabaseAction(){	
+		btnCreateDatabase.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					String filename = txtFilename.getText();
+					model.clear();
+					model.createDatabase(filename);
+					updateAll();
+				} catch (IOException e) {
+					errorAlert(e.getMessage(), "Error");
+				}
+			}
+		});
+	}
+	private void handleCreateCharacterAction(){	
+		btnCreateCharacter.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if(model.hasActiveDatabase())
+				{
+					
+				}
+				else
+					infoAlert("You must have an open database to create a character","No open database");
+			}
+		});
+	}
 	private void handleSearchCharacterAction() {
 		btnSearchCharacter.setOnAction(new EventHandler<ActionEvent>() {
 			@Override

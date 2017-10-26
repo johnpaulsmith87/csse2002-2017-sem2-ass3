@@ -119,6 +119,12 @@ public class Model {
 		activeDatabase.add(character);
 		availableCharacters.add(character.name);
 	}
+	public void createDatabase(String filePath) throws IOException
+	{
+		CharacterDatabase db = new CharacterDatabase(filePath);
+		activeDatabase = db;
+		db.save();
+	}
 
 	/**
 	 * @requires CharacterDatabase is active (i.e not null)
