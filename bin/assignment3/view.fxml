@@ -50,7 +50,7 @@
                                     <Insets bottom="25.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Button id="btnLoadDatabase" mnemonicParsing="false" text="Load Database" GridPane.halignment="CENTER">
+                              <Button id="btnLoadDatabase" fx:id="btnLoadDatabase" mnemonicParsing="false" text="Load Database" GridPane.halignment="CENTER">
                                  <GridPane.margin>
                                     <Insets top="25.0" />
                                  </GridPane.margin>
@@ -60,24 +60,24 @@
                                     <Insets bottom="25.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Button id="btnSaveDatabase" mnemonicParsing="false" text="Save Database" GridPane.halignment="CENTER">
+                              <Button id="btnSaveDatabase" fx:id="btnSaveDatabase" mnemonicParsing="false" text="Save Database" GridPane.halignment="CENTER">
                                  <GridPane.margin>
                                     <Insets top="85.0" />
                                  </GridPane.margin>
                               </Button>
-                              <TextField id="txtFilename" promptText="Filename" GridPane.columnIndex="1">
+                              <TextField id="txtFilename" fx:id="txtCreateDatabase" promptText="Filename" GridPane.columnIndex="1">
                                  <GridPane.margin>
                                     <Insets left="5.0" right="5.0" top="25.0" />
                                  </GridPane.margin>
                               </TextField>
-                              <Button id="btnCreateDatabase" mnemonicParsing="false" text="Create Database" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                              <Button id="btnCreateDatabase" fx:id="btnCreateDatabase" mnemonicParsing="false" text="Create Database" GridPane.columnIndex="1" GridPane.halignment="CENTER">
                                  <GridPane.margin>
                                     <Insets top="85.0" />
                                  </GridPane.margin>
                               </Button>
                            </children>
                         </GridPane>
-                        <ListView id="lsvListCharacters" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                        <ListView id="lsvListCharacters" fx:id="lsvViewDatabase" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </GridPane.margin>
@@ -89,15 +89,15 @@
                                     <Insets />
                                  </VBox.margin>
                               </Label>
-                              <TextField id="txtNewCharName" promptText="Enter character name">
+                              <TextField id="txtNewCharName" fx:id="txtCreateCharacterName" promptText="Enter character name">
                                  <VBox.margin>
                                     <Insets left="50.0" right="50.0" />
                                  </VBox.margin>
                               </TextField>
                               <ButtonBar prefHeight="40.0" prefWidth="200.0">
                                 <buttons>
-                                    <Button id="btnCreateCharacter" mnemonicParsing="false" text="Create Character" />
-                                  <Button id="btnCreateSuperCharacter" mnemonicParsing="false" text="Create Super Character" />
+                                    <Button id="btnCreateCharacter" fx:id="btnCreateCharacter" mnemonicParsing="false" text="Create Character" />
+                                  <Button id="btnCreateSuperCharacter" fx:id="btnCreateSuperCharacter" mnemonicParsing="false" text="Create Super Character" />
                                 </buttons>
                                  <padding>
                                     <Insets right="25.0" />
@@ -106,8 +106,8 @@
                               <Label text="Search for a character by name" />
                               <ButtonBar buttonMinWidth="50.0" prefHeight="40.0" prefWidth="200.0">
                                 <buttons>
-                                    <TextField prefHeight="25.0" prefWidth="266.0" promptText="Enter character name" />
-                                  <Button maxWidth="100.0" minWidth="-Infinity" mnemonicParsing="false" prefWidth="100.0" text="Search" />
+                                    <TextField fx:id="txtSearchCharacter" prefHeight="25.0" prefWidth="266.0" promptText="Enter character name" />
+                                  <Button fx:id="btnSearchCharacter" maxWidth="100.0" minWidth="-Infinity" mnemonicParsing="false" prefWidth="100.0" text="Search" />
                                 </buttons>
                                  <padding>
                                     <Insets right="10.0" />
@@ -116,13 +116,13 @@
                               <ButtonBar prefHeight="40.0" prefWidth="200.0">
                                 <buttons>
                                     <Label prefHeight="17.0" prefWidth="256.0" text="Clear current search" />
-                                  <Button mnemonicParsing="false" text="Clear Search" />
+                                  <Button fx:id="btnClearSearch" mnemonicParsing="false" text="Clear Search" />
                                 </buttons>
                                  <padding>
                                     <Insets right="10.0" />
                                  </padding>
                               </ButtonBar>
-                              <Button mnemonicParsing="false" text="Delete Selected Character" />
+                              <Button fx:id="btnDeleteCharacter" mnemonicParsing="false" text="Delete Selected Character" />
                            </children>
                         </VBox>
                      </children>
@@ -147,15 +147,15 @@
                               </Label>
                            </children>
                         </HBox>
-                        <Button mnemonicParsing="false" text="Change Image">
+                        <Button fx:id="btnChangeImage" mnemonicParsing="false" text="Change Image">
                            <VBox.margin>
                               <Insets left="33.0" />
                            </VBox.margin>
                         </Button>
                         <GridPane prefHeight="412.0" prefWidth="634.0">
                           <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="135.5" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="374.5" minWidth="10.0" prefWidth="374.5" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -164,25 +164,37 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label text="Label" />
-                              <Label text="Label" GridPane.rowIndex="1" />
-                              <Label text="Label" GridPane.rowIndex="2" />
-                              <Label text="Label" GridPane.rowIndex="3" />
-                              <TextField GridPane.columnIndex="1" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label text="Description:">
+                           <font>
+                              <Font size="16.0" />
+                           </font></Label>
+                              <Label text="Traits:" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="16.0" />
+                           </font></Label>
+                              <Label text="Power Level:" GridPane.rowIndex="2">
+                           <font>
+                              <Font size="16.0" />
+                           </font></Label>
+                              <Label text="Powers:" GridPane.rowIndex="3">
+                           <font>
+                              <Font size="16.0" />
+                           </font></Label>
+                              <TextField fx:id="txtDescription" GridPane.columnIndex="1" />
+                              <TextField fx:id="txtPowerLevel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextArea fx:id="txtTraits" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextArea fx:id="txtPowers" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                            </children>
                            <VBox.margin>
                               <Insets left="60.0" right="60.0" />
                            </VBox.margin>
                         </GridPane>
-                        <Button mnemonicParsing="false" text="Save Character Changes">
+                        <Button fx:id="btnSaveCharacterChanges" mnemonicParsing="false" text="Save Character Changes">
                            <VBox.margin>
-                              <Insets left="200.0" />
+                              <Insets left="150.0" top="15.0" />
                            </VBox.margin>
                            <font>
-                              <Font size="18.0" />
+                              <Font size="16.0" />
                            </font>
                         </Button>
                      </children>
