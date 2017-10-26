@@ -77,7 +77,7 @@ public class Model {
 	}
 	/**
 	 * @requires Selected character to be a SuperCharacter
-	 * @param powers
+	 * @param powers The list of powers to replacing the existing set.
 	 */
 	public void setSelectedSuperCharacterPowers(ArrayList<String> powers) {
 		//essentially the same as traits
