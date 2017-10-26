@@ -19,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
@@ -75,6 +76,8 @@ public class Controller implements Initializable {
 	// listview
 	@FXML
 	private ListView<String> lsvViewDatabase;
+	// just a commonly used constant
+	private static final String newLine = System.getProperty("line.separator");
 
 	public Controller() {
 		/*
@@ -90,13 +93,16 @@ public class Controller implements Initializable {
 		handleSearchCharacterAction();
 		handleLoadDatabaseAction();
 		handleSaveDatabaseAction();
+		handleSearchCharacterAction();
 	}
 
 	private void handleClearSearchAction() {
 		btnClearSearch.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				// add code here!
+				model.clearSelectedCharacter();
+				txtSearchCharacter.setText("");
+				updateAll();
 			}
 		});
 	}
@@ -110,12 +116,12 @@ public class Controller implements Initializable {
 					// load database
 					model.loadDatabase(filename);
 					// populate listview with items
-					lsvViewDatabase.setItems(model.getAvailableCharacters());
+					updateAll();
 
 				} catch (FileNotFoundException e) {
-					errorAlert("File not found. Please try again.");
+					errorAlert("File not found. Please try again.", "Error");
 				} catch (Exception e) {
-					errorAlert(e.getMessage());
+					errorAlert(e.getMessage(), "Error");
 				}
 			}
 		});
@@ -131,7 +137,7 @@ public class Controller implements Initializable {
 					model.saveDatabase();
 
 				} catch (Exception e) {
-					errorAlert(e.getMessage());
+					errorAlert(e.getMessage(), "Error");
 				}
 			}
 		});
@@ -141,32 +147,52 @@ public class Controller implements Initializable {
 		btnSearchCharacter.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				// add code here!
+				if (model.hasActiveDatabase() && !model.searchSuccess(txtSearchCharacter.getText()))
+					infoAlert("No character found matching: " + txtSearchCharacter.getText(), "No Match!");
+				updateAll();
 			}
 		});
 	}
 
 	private void updateAll() {
 		// updates all database and character info in the UI
-		lsvViewDatabase.setItems(model.getAvailableCharacters());
 		if (model.hasSelectedCharacter()) {
-			// update all info on character
-			txtDescription.setText(model.getSelectedCharacterDescription());
-			setTraits();
-			lblCharacterName.setText(model.getSelectedCharacterName());
-			if (model.isSelectedCharacterSuperCharacter()) {
+			lsvViewDatabase.setItems(model.getAvailableCharacters());
+			if (model.hasSelectedCharacter()) {
+				// update all info on character
+				txtDescription.setText(model.getSelectedCharacterDescription());
+				setTraits();
+				lblCharacterName.setText(model.getSelectedCharacterName());
+				if (model.isSelectedCharacterSuperCharacter()) {
+					setPowers();
+					txtPowerLevel.setText(model.getSuperCharacterPowerRanking());
+				} else {
+					txtPowerLevel.setText("Not applicable");
+					txtPowers.setText("Not applicable");
+				}
 
-			} else {
-				txtPowerLevel.setText("Not applicable");
-				txtPowers.setText("Not applicable");
 			}
-
+		} else {
+			// no selected character, just set all text to empty/default values!
+			txtDescription.setText("");
+			txtPowers.setText("");
+			lblCharacterName.setText("");
+			txtTraits.setText("");
+			imvCharacterImage.setImage(new Image("..\\images\\default.png"));
 		}
 	}
 
-	private void errorAlert(String message) {
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setHeaderText("Error");
+	private void errorAlert(String message, String header) {
+		generateAlert(message, header, AlertType.ERROR);
+	}
+
+	private void infoAlert(String message, String header) {
+		generateAlert(message, header, AlertType.INFORMATION);
+	}
+
+	private void generateAlert(String message, String header, AlertType type) {
+		Alert alert = new Alert(type);
+		alert.setHeaderText(header);
 		alert.setContentText(message);
 		alert.showAndWait();
 	}
@@ -175,7 +201,6 @@ public class Controller implements Initializable {
 		// I went for a messy approach here :(
 		ArrayList<String> traits = model.getSelectedCharacterTraits();
 		int size = traits.size();
-		String newLine = System.getProperty("line.separator");
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < size; i++) {
 			sb.append(traits.get(i));
@@ -183,6 +208,47 @@ public class Controller implements Initializable {
 				sb.append(newLine);
 		}
 		txtTraits.setText(sb.toString());
+	}
+
+	/**
+	 * @requires the selected character in the model is a SuperCharacter
+	 */
+	private void setPowers() {
+		ArrayList<String> powers = model.getSelectedSuperCharacterPowers();
+		int size = powers.size();
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < size; i++) {
+			sb.append(powers.get(i));
+			if (i != size - 1)
+				sb.append(newLine);
+		}
+		txtPowers.setText(sb.toString());
+	}
+
+	private ArrayList<String> getTraits() {
+		// parse the trait text box by line and add each string to a list
+		String rawTraitsText = txtTraits.getText();
+		ArrayList<String> result = new ArrayList<String>();
+		// we need to remove any possible empty or whitespace only strings!
+		for (String rawTrait : rawTraitsText.split(newLine + "+")) {
+			String trimmed = rawTrait.trim();
+			if (!trimmed.isEmpty())
+				result.add(trimmed);
+		}
+		return result;
+	}
+
+	private ArrayList<String> getPowers() {
+		// parse the trait text box by line and add each string to a list
+		String rawPowersText = txtPowers.getText();
+		ArrayList<String> result = new ArrayList<String>();
+		// we need to remove any possible empty or whitespace only strings!
+		for (String rawPower : rawPowersText.split(newLine + "+")) {
+			String trimmed = rawPower.trim();
+			if (!trimmed.isEmpty())
+				result.add(trimmed);
+		}
+		return result;
 	}
 	/*
 	 * chooser.showOpenDialog(node.getScene().getWindow());

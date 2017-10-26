@@ -26,6 +26,10 @@ public class Model {
 	public boolean hasSelectedCharacter() {
 		return selectedCharacter != null;
 	}
+
+	public boolean hasActiveDatabase() {
+		return activeDatabase != null;
+	}
 	/*
 	 * TODO: INVARIANT GOES HERE
 	 */
@@ -35,11 +39,11 @@ public class Model {
 		 * This conatins: database and currently selected character TODO: DELETE
 		 * THIS LINE AND IMPLEMENT CONSTRUCTOR
 		 */
-		availableCharacters = FXCollections.observableArrayList();
+		clear();
 	}
 
 	public ObservableList<String> getAvailableCharacters() {
-		return availableCharacters;
+		return availableCharacters.sorted();
 	}
 
 	public void setImagePath(String imagePath) {
@@ -62,7 +66,11 @@ public class Model {
 		selectedCharacter.setDescription(description);
 	}
 
-	public void setSuperCharacterPowerRanking(int powerLevel) throws IllegalPowerRankingException {
+	public String getSuperCharacterPowerRanking() {
+		return "" + ((SuperCharacter) selectedCharacter).getPowerRanking();
+	}
+
+	public void setSeleectedSuperCharacterPowerRanking(int powerLevel) throws IllegalPowerRankingException {
 		((SuperCharacter) selectedCharacter).setPowerRanking(powerLevel);
 	}
 
@@ -112,6 +120,20 @@ public class Model {
 		availableCharacters.add(character.name);
 	}
 
+	/**
+	 * @requires CharacterDatabase is active (i.e not null)
+	 * @param name
+	 *            of the character to select
+	 */
+	public void selectCharacter(String name) {
+		// select character with given name - only makes sense if db is active
+		selectedCharacter = activeDatabase.search(name);
+	}
+
+	public void clearSelectedCharacter() {
+		selectedCharacter = null;
+	}
+
 	public void createSuperCharacter(String name) throws IllegalPowerRankingException {
 		Character character = new SuperCharacter(name, "", 5);
 		selectedCharacter = character;
@@ -131,6 +153,19 @@ public class Model {
 		availableCharacters.clear();
 		availableCharacters.addAll(activeDatabase.getCharacterNames());
 
+	}
+
+	public void clear() {
+		// set database and selected character to null.
+		availableCharacters = FXCollections.observableArrayList();
+		activeDatabase = null;
+		selectedCharacter = null;
+	}
+
+	public boolean searchSuccess(String name) {
+		Character result = activeDatabase.search(name);
+		selectedCharacter = result;
+		return result != null;
 	}
 
 }
