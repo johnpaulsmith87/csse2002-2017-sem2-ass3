@@ -5,7 +5,6 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -20,9 +19,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="assignment3.Controller">
    <children>
-      <SplitPane dividerPositions="0.34168336673346694" layoutX="89.0" layoutY="63.0" prefHeight="700.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="650.0" AnchorPane.topAnchor="0.0">
                <children>
                   <GridPane prefHeight="698.0" prefWidth="294.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columnConstraints>
@@ -132,7 +129,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="698.0" prefWidth="613.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="698.0" prefWidth="613.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="350.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <VBox layoutX="180.0" layoutY="51.0" prefHeight="698.0" prefWidth="654.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
@@ -157,8 +154,8 @@
                         </Button>
                         <GridPane prefHeight="412.0" prefWidth="634.0">
                           <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="135.5" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="374.5" minWidth="10.0" prefWidth="374.5" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -167,10 +164,22 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label text="Label" />
-                              <Label text="Label" GridPane.rowIndex="1" />
-                              <Label text="Label" GridPane.rowIndex="2" />
-                              <Label text="Label" GridPane.rowIndex="3" />
+                              <Label text="Description:">
+                           <font>
+                              <Font size="16.0" />
+                           </font></Label>
+                              <Label text="Traits:" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="16.0" />
+                           </font></Label>
+                              <Label text="Power Level:" GridPane.rowIndex="2">
+                           <font>
+                              <Font size="16.0" />
+                           </font></Label>
+                              <Label text="Powers:" GridPane.rowIndex="3">
+                           <font>
+                              <Font size="16.0" />
+                           </font></Label>
                               <TextField GridPane.columnIndex="1" />
                               <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
@@ -182,10 +191,10 @@
                         </GridPane>
                         <Button mnemonicParsing="false" text="Save Character Changes">
                            <VBox.margin>
-                              <Insets left="200.0" />
+                              <Insets left="150.0" top="15.0" />
                            </VBox.margin>
                            <font>
-                              <Font size="18.0" />
+                              <Font size="16.0" />
                            </font>
                         </Button>
                      </children>
@@ -194,7 +203,5 @@
                      </padding>
                   </VBox>
                </children></AnchorPane>
-        </items>
-      </SplitPane>
    </children>
 </AnchorPane>
