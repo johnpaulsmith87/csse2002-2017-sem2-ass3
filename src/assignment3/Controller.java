@@ -26,7 +26,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 /**
  * Controller class for the Character Editor.
  * 
- * @author leggy (Lachlan Healey)
+ * @author John-Paul Smith
  */
 public class Controller implements Initializable {
 
@@ -77,11 +77,11 @@ public class Controller implements Initializable {
 	// listview
 	@FXML
 	private ListView<String> lsvViewDatabase;
-	// just a commonly used constant
+	//constant
 	private static final String newLine = System.getProperty("line.separator");
-
 	private String defaultImagePath() {
-		File f = new File(System.getProperty("user.dir") + "/src/images/default.png");
+		File f = new File(
+				System.getProperty("user.dir") + "/src/images/default.png");
 		return f.getAbsolutePath();
 	}
 
@@ -106,13 +106,14 @@ public class Controller implements Initializable {
 	}
 
 	/*
-	 * Event handlers
+	 * Event handlers - No javadoc for private methods
 	 */
 	private void handleSelectListViewCharacterAction() {
 		lsvViewDatabase.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				model.selectCharacter(lsvViewDatabase.getSelectionModel().getSelectedItem());
+				model.selectCharacter(
+						lsvViewDatabase.getSelectionModel().getSelectedItem());
 				updateAll();
 			}
 		});
@@ -159,7 +160,7 @@ public class Controller implements Initializable {
 					model.saveDatabase();
 
 				} catch (Exception e) {
-					errorAlert(e.getMessage(), "Error");
+					errorAlert("Error attempting to save database", "Error");
 				}
 			}
 		});
@@ -190,7 +191,9 @@ public class Controller implements Initializable {
 						&& model.createCharacter(name, defaultImagePath())) {
 					updateAll();
 				} else
-					infoAlert("Either you didn't enter a name or there wasn't an open database", "Not valid");
+					infoAlert(
+							"Either you didn't enter a name or there wasn't an open database",
+							"Not valid");
 			}
 		});
 	}
@@ -201,11 +204,14 @@ public class Controller implements Initializable {
 			public void handle(ActionEvent event) {
 				String name = txtCreateCharacterName.getText();
 				try {
-					if (model.hasActiveDatabase() && name != null && !name.isEmpty()
-							&& model.createSuperCharacter(name, defaultImagePath()))
+					if (model.hasActiveDatabase() && name != null
+							&& !name.isEmpty() && model.createSuperCharacter(
+									name, defaultImagePath()))
 						updateAll();
 					else
-						infoAlert("Either you didn't enter a name or there wasn't an open database", "Not valid");
+						infoAlert(
+								"Either you didn't enter a name or there wasn't an open database",
+								"Not valid");
 				} catch (IllegalPowerRankingException e) {
 					errorAlert(e.getMessage(), "Illegal Power Ranking");
 				}
@@ -219,15 +225,18 @@ public class Controller implements Initializable {
 			public void handle(ActionEvent event) {
 				if (model.hasSelectedCharacter()) {
 					try {
-						model.saveCharacter(lblCharacterName.getText(), txtDescription.getText(), getTraits(),
+						model.saveCharacter(lblCharacterName.getText(),
+								txtDescription.getText(), getTraits(),
 								getPowers(), txtPowerLevel.getText());
 						model.selectCharacter(lblCharacterName.getText());
 						updateAll();
 					} catch (IllegalPowerRankingException e) {
-						errorAlert(e.getMessage(), "Illegal power ranking!");
+						errorAlert(e.getMessage(), "Illegal Power Ranking!");
 					}
 				} else
-					infoAlert("You must have a selected character to save a character", "No selected character");
+					infoAlert(
+							"You must have a selected character to save a character",
+							"No selected character");
 			}
 		});
 	}
@@ -236,8 +245,12 @@ public class Controller implements Initializable {
 		btnSearchCharacter.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				if (model.hasActiveDatabase() && !model.searchSuccess(txtSearchCharacter.getText()))
-					infoAlert("No character found matching: " + txtSearchCharacter.getText(), "No Match!");
+				if (model.hasActiveDatabase()
+						&& !model.searchSuccess(txtSearchCharacter.getText()))
+					infoAlert(
+							"No character found matching: "
+									+ txtSearchCharacter.getText(),
+							"No Match!");
 				updateAll();
 			}
 		});
@@ -251,7 +264,8 @@ public class Controller implements Initializable {
 					model.deleteCharacter();
 					updateAll();
 				} else
-					infoAlert("You must have a character selected to delete", "No character selected");
+					infoAlert("You must have a character selected to delete",
+							"No character selected");
 			}
 		});
 	}
@@ -261,23 +275,31 @@ public class Controller implements Initializable {
 			@Override
 			public void handle(ActionEvent event) {
 				if (model.hasSelectedCharacter()) {
-					ExtensionFilter ef = new ExtensionFilter("Image files", "*.png", "*.jpg", "*.jpeg", "*.gif");
+					ExtensionFilter ef = new ExtensionFilter("Image files",
+							"*.png", "*.jpg", "*.jpeg", "*.gif");
 					FileChooser fc = new FileChooser();
 					fc.setTitle("Choose an image for the selected character");
-					File initial = new File(System.getProperty("user.dir") + "/src/images/");
+					File initial = new File(
+							System.getProperty("user.dir") + "/src/images/");
 					fc.setInitialDirectory(initial);
 					fc.getExtensionFilters().add(ef);
-					File file = fc.showOpenDialog(btnChangeImage.getScene().getWindow());
+					File file = fc.showOpenDialog(
+							btnChangeImage.getScene().getWindow());
 					model.setImagePath(file.getAbsolutePath());
 					updateAll();
 				} else
-					infoAlert("You must have a character selected to add image file", "No character selected");
+					infoAlert(
+							"You must have a character selected to add image file",
+							"No character selected");
 			}
 		});
 	}
 
-	/*
-	 * Helper methods
+	// Helper methods
+
+	/**
+	 * This method essentially acts as a "refresh". It sets all values in the UI
+	 * to be up to date with what's in the model
 	 */
 	private void updateAll() {
 		// updates all database and character info in the UI
@@ -292,7 +314,8 @@ public class Controller implements Initializable {
 				imvCharacterImage.setImage(new Image(f.toURI().toString()));
 				if (model.isSelectedCharacterSuperCharacter()) {
 					setPowers();
-					txtPowerLevel.setText(model.getSuperCharacterPowerRanking());
+					txtPowerLevel
+							.setText(model.getSuperCharacterPowerRanking());
 				} else {
 					txtPowerLevel.setText("Not applicable");
 					txtPowers.setText("Not applicable");
@@ -305,19 +328,31 @@ public class Controller implements Initializable {
 			txtPowers.setText("");
 			lblCharacterName.setText("");
 			txtTraits.setText("");
-			File file = new File(System.getProperty("user.dir") + "/src/images/default.png");
+			File file = new File(
+					System.getProperty("user.dir") + "/src/images/default.png");
 			imvCharacterImage.setImage(new Image(file.toURI().toString()));
 		}
 	}
 
+	// generates error alert
 	private void errorAlert(String message, String header) {
 		generateAlert(message, header, AlertType.ERROR);
 	}
 
+	// generates info alert
 	private void infoAlert(String message, String header) {
 		generateAlert(message, header, AlertType.INFORMATION);
 	}
 
+	/**
+	 * 
+	 * @param message
+	 *            Message to display
+	 * @param header
+	 *            Header on alert
+	 * @param type
+	 *            Type of alert(AlertType enum)
+	 */
 	private void generateAlert(String message, String header, AlertType type) {
 		Alert alert = new Alert(type);
 		alert.setHeaderText(header);
@@ -325,8 +360,10 @@ public class Controller implements Initializable {
 		alert.showAndWait();
 	}
 
+	/**
+	 * Helper method to set the traits in the UI
+	 */
 	private void setTraits() {
-		// I went for a messy approach here :(
 		ArrayList<String> traits = model.getSelectedCharacterTraits();
 		int size = traits.size();
 		StringBuilder sb = new StringBuilder();
@@ -339,7 +376,7 @@ public class Controller implements Initializable {
 	}
 
 	/**
-	 * @requires the selected character in the model is a SuperCharacter
+	 * Helper method to set the powers in the UI
 	 */
 	private void setPowers() {
 		ArrayList<String> powers = model.getSelectedSuperCharacterPowers();
@@ -352,7 +389,7 @@ public class Controller implements Initializable {
 		}
 		txtPowers.setText(sb.toString());
 	}
-
+	
 	private ArrayList<String> getTraits() {
 		// parse the trait text box by line and add each string to a list
 		String rawTraitsText = txtTraits.getText();
@@ -360,6 +397,7 @@ public class Controller implements Initializable {
 		// we need to remove any possible empty or whitespace only strings!
 		for (String rawTrait : rawTraitsText.split("\n" + "+")) {
 			String trimmed = rawTrait.trim();
+			// just !emtpy didn't work
 			if (!trimmed.isEmpty() || trimmed.length() > 0)
 				result.add(trimmed);
 		}

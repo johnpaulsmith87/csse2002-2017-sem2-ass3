@@ -140,7 +140,7 @@
                                     <Image url="@../images/default.png" />
                                  </image>
                               </ImageView>
-                              <Label fx:id="lblCharacterName" alignment="CENTER" prefHeight="81.0" prefWidth="445.0" text="&lt;Character Name&gt;">
+                              <Label fx:id="lblCharacterName" alignment="CENTER" prefHeight="81.0" prefWidth="445.0" text="">
                                  <font>
                                     <Font size="40.0" />
                                  </font>

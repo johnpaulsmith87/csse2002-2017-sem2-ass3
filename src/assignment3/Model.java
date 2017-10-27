@@ -10,15 +10,15 @@ import javafx.collections.ObservableList;
 /**
  * Model class for the Character Editor
  * 
- * @author leggy (Lachlan Healey)
+ * @author John-Paul Smith
  */
 public class Model {
-
 	private Character selectedCharacter;
 	private CharacterDatabase activeDatabase;
-	private ObservableList<String> availableCharacters;// for the list view!
-	
+	// list of characters in a database for display
+	private ObservableList<String> availableCharacters;
 
+	// some helper methods for the controller
 	public boolean isSelectedCharacterSuperCharacter() {
 		return selectedCharacter instanceof SuperCharacter;
 	}
@@ -32,87 +32,96 @@ public class Model {
 	}
 
 	/**
-	 * Cannot have a selected character without an active database. Furthermore,
-	 * that character must be in said database. If activeDatabase == null,
-	 * selectedCharacter == null. You can however have a database open and no
-	 * selected character.
+	 * The model allows for both selectedCharacter and activeDatabase to be null
+	 * (just like at start up). Cannot have a selected character without an
+	 * active database. Furthermore, that character must be in said database. If
+	 * activeDatabase == null, selectedCharacter == null. You can however have a
+	 * database open and no selected character. availableCharacter is always at
+	 * least an empty list (never null).
 	 */
 
 	public Model() {
 		clear();
 	}
 
+	/**
+	 * 
+	 * @return sorted list of characters in database
+	 */
 	public ObservableList<String> getAvailableCharacters() {
 		return availableCharacters.sorted();
 	}
 
+	/**
+	 * Sets the image path to the selectedCharacter
+	 * 
+	 * @requires selectCharcater is not null
+	 * 
+	 * @param imagePath
+	 */
 	public void setImagePath(String imagePath) {
 		selectedCharacter.setImagePath(imagePath);
 	}
+
+	/**
+	 * @requires selectedCharacter is not null
+	 * @return The image path of selectedCharacter
+	 */
 
 	public String getImagePath() {
 		return selectedCharacter.getImagePath();
 	}
 
+	/**
+	 * @requires selectedCharacter is not null
+	 * @return The name of the selectedCharacter
+	 */
 	public String getSelectedCharacterName() {
 		return selectedCharacter.getName();
 	}
 
+	/**
+	 * @requires selectedCharacter is not null
+	 * @return The description of the selected character
+	 */
 	public String getSelectedCharacterDescription() {
 		return selectedCharacter.getDescription();
 	}
 
-	public void setCharacterDescription(String description) {
-		selectedCharacter.setDescription(description);
-	}
-
+	/**
+	 * @requires selectedCharacter is a superCharacter and not null
+	 * @return The power ranking of the selected character
+	 */
 	public String getSuperCharacterPowerRanking() {
 		return "" + ((SuperCharacter) selectedCharacter).getPowerRanking();
 	}
 
-	public void setSeleectedSuperCharacterPowerRanking(int powerLevel) throws IllegalPowerRankingException {
-		((SuperCharacter) selectedCharacter).setPowerRanking(powerLevel);
-	}
-
+	/**
+	 * @requires Selected character is not null
+	 * @return arraylist with traits
+	 */
 	public ArrayList<String> getSelectedCharacterTraits() {
 		return new ArrayList<String>(selectedCharacter.getTraits());
 	}
 
-	public void setSelectedCharacterTraits(ArrayList<String> traits) {
-		// remove all traits, then add these new traits provided from
-		// view>controller
-		for (String trait : selectedCharacter.getTraits()) {
-			selectedCharacter.removeTrait(trait);
-		}
-		for (String trait : traits) {
-			selectedCharacter.addTrait(trait);
-		}
-	}
-
 	/**
-	 * @requires Selected character to be a SuperCharacter
-	 * @param powers
-	 *            The list of powers to replacing the existing set.
-	 */
-	public void setSelectedSuperCharacterPowers(ArrayList<String> powers) {
-		// essentially the same as traits
-		SuperCharacter superChar = ((SuperCharacter) selectedCharacter);
-		for (String power : superChar.getPowers()) {
-			superChar.removePower(power);
-		}
-		for (String power : powers) {
-			superChar.addPower(power);
-		}
-	}
-
-	/**
-	 * @requires Requires the selectedCharacter to be a supercharacter
-	 * @return Returns
+	 * @requires Requires the selectedCharacter to be a SuperCharacter
+	 * @return Returns arraylist with powers
 	 */
 	public ArrayList<String> getSelectedSuperCharacterPowers() {
-		return new ArrayList<String>(((SuperCharacter) selectedCharacter).getPowers());
+		return new ArrayList<String>(
+				((SuperCharacter) selectedCharacter).getPowers());
 	}
 
+	/**
+	 * Creates a new character with some default values
+	 * 
+	 * @param name
+	 *            name of character
+	 * @param defaultPath
+	 *            default image filepath
+	 * @return True if character didn't already exist, False otherwise
+	 */
 	public boolean createCharacter(String name, String defaultPath) {
 		Character character = new Character(name, "");
 		boolean result = activeDatabase.search(name) == null;
@@ -125,6 +134,14 @@ public class Model {
 		return result;
 	}
 
+	/**
+	 * Creates a new database with an absolute filepath
+	 * 
+	 * @param filePath
+	 *            Absolute filepath for new database, will overwite if one
+	 *            already exists
+	 * @throws IOException
+	 */
 	public void createDatabase(String filePath) throws IOException {
 		CharacterDatabase db = new CharacterDatabase(filePath);
 		activeDatabase = db;
@@ -141,11 +158,23 @@ public class Model {
 		selectedCharacter = activeDatabase.search(name);
 	}
 
+	// helper method
 	public void clearSelectedCharacter() {
 		selectedCharacter = null;
 	}
 
-	public boolean createSuperCharacter(String name, String defaultPath) throws IllegalPowerRankingException {
+	/**
+	 * Creates a new supercharacter and adds it to the open database
+	 * 
+	 * @param name
+	 *            name of character
+	 * @param defaultPath
+	 *            default image filepath
+	 * @return True if character didn't already exist, False otherwise
+	 * @throws IllegalPowerRankingException
+	 */
+	public boolean createSuperCharacter(String name, String defaultPath)
+			throws IllegalPowerRankingException {
 		Character character = new SuperCharacter(name, "", 5);
 		boolean result = activeDatabase.search(name) == null;
 		if (result) {
@@ -157,23 +186,40 @@ public class Model {
 		return result;
 	}
 
+	/**
+	 * Removes character from database
+	 * 
+	 * @requires selectedCharacter is not null
+	 * 
+	 */
 	public void deleteCharacter() {
-		availableCharacters.removeIf(c -> c.equals(selectedCharacter.getName()));
+		availableCharacters
+				.removeIf(c -> c.equals(selectedCharacter.getName()));
 		activeDatabase.remove(selectedCharacter);
 		clearSelectedCharacter();
 	}
-
-	public void saveCharacter(String name, String description, ArrayList<String> Traits, ArrayList<String> Powers,
+	/**
+	 * Saves character to database.
+	 * 
+	 * @param name
+	 * @param description
+	 * @param Traits ArrayList of traits
+	 * @param Powers ArrayList of powers
+	 * @param powerRanking
+	 * @throws IllegalPowerRankingException
+	 */
+	public void saveCharacter(String name, String description,
+			ArrayList<String> Traits, ArrayList<String> Powers,
 			String powerRanking) throws IllegalPowerRankingException {
 		if (isSelectedCharacterSuperCharacter()) {
 			int powerRank = 0;
-			try{
+			try {
 				powerRank = Integer.parseInt(powerRanking);
-			}
-			catch(Exception e){
+			} catch (Exception e) {
 				throw new IllegalPowerRankingException();
 			}
-			SuperCharacter character = new SuperCharacter(name, description, powerRank);
+			SuperCharacter character = new SuperCharacter(name, description,
+					powerRank);
 			Traits.stream().forEach(t -> character.addTrait(t));
 			Powers.stream().forEach(p -> character.addPower(p));
 			character.setImagePath(getImagePath());
@@ -185,12 +231,23 @@ public class Model {
 			activeDatabase.update(character);
 		}
 	}
-
+	/**
+	 * Saves database to file.
+	 * @requires activeDatabase != null
+	 * @throws IOException
+	 */
 	public void saveDatabase() throws IOException {
 		activeDatabase.save();
 	}
 
-	public void loadDatabase(String filename) throws FileNotFoundException, Exception {
+	/**
+	 * Loads database from file.
+	 * @param filename Absolute path to database file
+	 * @throws FileNotFoundException
+	 * @throws Exception
+	 */
+	public void loadDatabase(String filename)
+			throws FileNotFoundException, Exception {
 		// handle errors on the controller/view level
 		CharacterDatabase loadedDatabase = new CharacterDatabase(filename);
 		loadedDatabase.load();
@@ -200,13 +257,21 @@ public class Model {
 
 	}
 
+	/**
+	 * Helper function to clear instance variables. It's called on
+	 * initialisation to maintain the invariant
+	 */
 	public void clear() {
 		// set database and selected character to null.
 		availableCharacters = FXCollections.observableArrayList();
 		activeDatabase = null;
 		selectedCharacter = null;
 	}
-
+	/**
+	 * 
+	 * @param name
+	 * @return True if character name is in db, False otherwise
+	 */
 	public boolean searchSuccess(String name) {
 		Character result = activeDatabase.search(name);
 		selectedCharacter = result;
