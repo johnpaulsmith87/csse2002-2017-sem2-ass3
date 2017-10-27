@@ -1,12 +1,11 @@
 package assignment3;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -14,14 +13,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
  * Controller class for the Character Editor.
@@ -80,6 +80,11 @@ public class Controller implements Initializable {
 	// just a commonly used constant
 	private static final String newLine = System.getProperty("line.separator");
 
+	private String defaultImagePath() {
+		File f = new File(System.getProperty("user.dir") + "/src/images/default.png");
+		return f.getAbsolutePath();
+	}
+
 	public Controller() {
 		this.model = new Model();
 	}
@@ -95,12 +100,24 @@ public class Controller implements Initializable {
 		handleCreateCharacterAction();
 		handleCreateSuperCharacterAction();
 		handleDeleteCharacterAction();
+		handleChangeImageAction();
+		handleSaveCharacterAction();
+		handleSelectListViewCharacterAction();
 	}
 
 	/*
-	 * / TODO: **fix search**, finish up all the handles, test, comment &
-	 * submit!
+	 * Event handlers
 	 */
+	private void handleSelectListViewCharacterAction() {
+		lsvViewDatabase.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				model.selectCharacter(lsvViewDatabase.getSelectionModel().getSelectedItem());
+				updateAll();
+			}
+		});
+	}
+
 	private void handleClearSearchAction() {
 		btnClearSearch.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -121,6 +138,7 @@ public class Controller implements Initializable {
 					// load database
 					model.loadDatabase(filename);
 					// populate listview with items
+					model.clearSelectedCharacter();
 					updateAll();
 
 				} catch (FileNotFoundException e) {
@@ -168,10 +186,11 @@ public class Controller implements Initializable {
 			@Override
 			public void handle(ActionEvent event) {
 				String name = txtCreateCharacterName.getText();
-				if (model.hasActiveDatabase() && name != null && model.createCharacter(name)) {
+				if (model.hasActiveDatabase() && name != null && !name.isEmpty()
+						&& model.createCharacter(name, defaultImagePath())) {
 					updateAll();
 				} else
-					infoAlert("You must have an open database to create a character", "No open database");
+					infoAlert("Either you didn't enter a name or there wasn't an open database", "Not valid");
 			}
 		});
 	}
@@ -182,13 +201,33 @@ public class Controller implements Initializable {
 			public void handle(ActionEvent event) {
 				String name = txtCreateCharacterName.getText();
 				try {
-					if (model.hasActiveDatabase() && name != null && model.createSuperCharacter(name))
+					if (model.hasActiveDatabase() && name != null && !name.isEmpty()
+							&& model.createSuperCharacter(name, defaultImagePath()))
 						updateAll();
 					else
-						infoAlert("You must have an open database to create a character", "No open database");
+						infoAlert("Either you didn't enter a name or there wasn't an open database", "Not valid");
 				} catch (IllegalPowerRankingException e) {
 					errorAlert(e.getMessage(), "Illegal Power Ranking");
 				}
+			}
+		});
+	}
+
+	private void handleSaveCharacterAction() {
+		btnSaveCharacter.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if (model.hasSelectedCharacter()) {
+					try {
+						model.saveCharacter(lblCharacterName.getText(), txtDescription.getText(), getTraits(),
+								getPowers(), txtPowerLevel.getText());
+						model.selectCharacter(lblCharacterName.getText());
+						updateAll();
+					} catch (IllegalPowerRankingException e) {
+						errorAlert(e.getMessage(), "Illegal power ranking!");
+					}
+				} else
+					infoAlert("You must have a selected character to save a character", "No selected character");
 			}
 		});
 	}
@@ -208,17 +247,38 @@ public class Controller implements Initializable {
 		btnDeleteCharacter.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				if(model.hasActiveDatabase() && model.hasSelectedCharacter())
-				{
+				if (model.hasActiveDatabase() && model.hasSelectedCharacter()) {
 					model.deleteCharacter();
 					updateAll();
-				}
-				else
-					infoAlert("You must have a character selected to delete","No character selected");
+				} else
+					infoAlert("You must have a character selected to delete", "No character selected");
 			}
 		});
 	}
 
+	private void handleChangeImageAction() {
+		btnChangeImage.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if (model.hasSelectedCharacter()) {
+					ExtensionFilter ef = new ExtensionFilter("Image files", "*.png", "*.jpg", "*.jpeg", "*.gif");
+					FileChooser fc = new FileChooser();
+					fc.setTitle("Choose an image for the selected character");
+					File initial = new File(System.getProperty("user.dir") + "/src/images/");
+					fc.setInitialDirectory(initial);
+					fc.getExtensionFilters().add(ef);
+					File file = fc.showOpenDialog(btnChangeImage.getScene().getWindow());
+					model.setImagePath(file.getAbsolutePath());
+					updateAll();
+				} else
+					infoAlert("You must have a character selected to add image file", "No character selected");
+			}
+		});
+	}
+
+	/*
+	 * Helper methods
+	 */
 	private void updateAll() {
 		// updates all database and character info in the UI
 		if (model.hasSelectedCharacter()) {
@@ -228,6 +288,8 @@ public class Controller implements Initializable {
 				txtDescription.setText(model.getSelectedCharacterDescription());
 				setTraits();
 				lblCharacterName.setText(model.getSelectedCharacterName());
+				File f = new File(model.getImagePath());
+				imvCharacterImage.setImage(new Image(f.toURI().toString()));
 				if (model.isSelectedCharacterSuperCharacter()) {
 					setPowers();
 					txtPowerLevel.setText(model.getSuperCharacterPowerRanking());
@@ -235,15 +297,16 @@ public class Controller implements Initializable {
 					txtPowerLevel.setText("Not applicable");
 					txtPowers.setText("Not applicable");
 				}
-
 			}
 		} else {
 			// no selected character, just set all text to empty/default values!
+			lsvViewDatabase.setItems(model.getAvailableCharacters());
 			txtDescription.setText("");
 			txtPowers.setText("");
 			lblCharacterName.setText("");
 			txtTraits.setText("");
-			imvCharacterImage.setImage(new Image("..\\images\\default.png"));
+			File file = new File(System.getProperty("user.dir") + "/src/images/default.png");
+			imvCharacterImage.setImage(new Image(file.toURI().toString()));
 		}
 	}
 
@@ -285,7 +348,7 @@ public class Controller implements Initializable {
 		for (int i = 0; i < size; i++) {
 			sb.append(powers.get(i));
 			if (i != size - 1)
-				sb.append(newLine);
+				sb.append("\n");
 		}
 		txtPowers.setText(sb.toString());
 	}
@@ -295,9 +358,9 @@ public class Controller implements Initializable {
 		String rawTraitsText = txtTraits.getText();
 		ArrayList<String> result = new ArrayList<String>();
 		// we need to remove any possible empty or whitespace only strings!
-		for (String rawTrait : rawTraitsText.split(newLine + "+")) {
+		for (String rawTrait : rawTraitsText.split("\n" + "+")) {
 			String trimmed = rawTrait.trim();
-			if (!trimmed.isEmpty())
+			if (!trimmed.isEmpty() || trimmed.length() > 0)
 				result.add(trimmed);
 		}
 		return result;
@@ -307,15 +370,11 @@ public class Controller implements Initializable {
 		// same as getTraits
 		String rawPowersText = txtPowers.getText();
 		ArrayList<String> result = new ArrayList<String>();
-		for (String rawPower : rawPowersText.split(newLine + "+")) {
+		for (String rawPower : rawPowersText.split("\n" + "+")) {
 			String trimmed = rawPower.trim();
-			if (!trimmed.isEmpty())
+			if (!trimmed.isEmpty() || trimmed.length() > 0)
 				result.add(trimmed);
 		}
 		return result;
 	}
-	/*
-	 * chooser.showOpenDialog(node.getScene().getWindow());
-	 */
-
 }

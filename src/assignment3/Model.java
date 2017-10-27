@@ -17,7 +17,7 @@ public class Model {
 	private Character selectedCharacter;
 	private CharacterDatabase activeDatabase;
 	private ObservableList<String> availableCharacters;// for the list view!
-	private static final String defaultDatabaseURI = "/csse2002-2017-sem2-ass3/default.dat";
+	
 
 	public boolean isSelectedCharacterSuperCharacter() {
 		return selectedCharacter instanceof SuperCharacter;
@@ -30,15 +30,15 @@ public class Model {
 	public boolean hasActiveDatabase() {
 		return activeDatabase != null;
 	}
-	/*
-	 * TODO: INVARIANT GOES HERE
+
+	/**
+	 * Cannot have a selected character without an active database. Furthermore,
+	 * that character must be in said database. If activeDatabase == null,
+	 * selectedCharacter == null. You can however have a database open and no
+	 * selected character.
 	 */
 
 	public Model() {
-		/*
-		 * This conatins: database and currently selected character TODO: DELETE
-		 * THIS LINE AND IMPLEMENT CONSTRUCTOR
-		 */
 		clear();
 	}
 
@@ -113,10 +113,11 @@ public class Model {
 		return new ArrayList<String>(((SuperCharacter) selectedCharacter).getPowers());
 	}
 
-	public boolean createCharacter(String name) {
+	public boolean createCharacter(String name, String defaultPath) {
 		Character character = new Character(name, "");
-		boolean result = activeDatabase.search(name) != null;
+		boolean result = activeDatabase.search(name) == null;
 		if (result) {
+			character.setImagePath(defaultPath);
 			activeDatabase.add(character);
 			selectedCharacter = character;
 			availableCharacters.add(character.name);
@@ -144,20 +145,45 @@ public class Model {
 		selectedCharacter = null;
 	}
 
-	public boolean createSuperCharacter(String name) throws IllegalPowerRankingException {
+	public boolean createSuperCharacter(String name, String defaultPath) throws IllegalPowerRankingException {
 		Character character = new SuperCharacter(name, "", 5);
-		boolean result = activeDatabase.search(name) != null;
+		boolean result = activeDatabase.search(name) == null;
 		if (result) {
+			character.setImagePath(defaultPath);
 			selectedCharacter = character;
 			activeDatabase.add(character);
 			availableCharacters.add(character.name);
 		}
 		return result;
 	}
-	public void deleteCharacter(){
+
+	public void deleteCharacter() {
 		availableCharacters.removeIf(c -> c.equals(selectedCharacter.getName()));
 		activeDatabase.remove(selectedCharacter);
 		clearSelectedCharacter();
+	}
+
+	public void saveCharacter(String name, String description, ArrayList<String> Traits, ArrayList<String> Powers,
+			String powerRanking) throws IllegalPowerRankingException {
+		if (isSelectedCharacterSuperCharacter()) {
+			int powerRank = 0;
+			try{
+				powerRank = Integer.parseInt(powerRanking);
+			}
+			catch(Exception e){
+				throw new IllegalPowerRankingException();
+			}
+			SuperCharacter character = new SuperCharacter(name, description, powerRank);
+			Traits.stream().forEach(t -> character.addTrait(t));
+			Powers.stream().forEach(p -> character.addPower(p));
+			character.setImagePath(getImagePath());
+			activeDatabase.update(character);
+		} else {
+			Character character = new Character(name, description);
+			Traits.stream().forEach(t -> character.addTrait(t));
+			character.setImagePath(getImagePath());
+			activeDatabase.update(character);
+		}
 	}
 
 	public void saveDatabase() throws IOException {

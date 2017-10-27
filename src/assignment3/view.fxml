@@ -107,7 +107,7 @@
                               <ButtonBar buttonMinWidth="50.0" prefHeight="40.0" prefWidth="200.0">
                                 <buttons>
                                     <TextField fx:id="txtSearchCharacter" prefHeight="25.0" prefWidth="266.0" promptText="Enter character name" />
-                                  <Button fx:id="btnSearchCharacter" maxWidth="100.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#Controller" prefWidth="100.0" text="Search" />
+                                  <Button fx:id="btnSearchCharacter" maxWidth="100.0" minWidth="-Infinity" mnemonicParsing="false" prefWidth="100.0" text="Search" />
                                 </buttons>
                                  <padding>
                                     <Insets right="10.0" />
