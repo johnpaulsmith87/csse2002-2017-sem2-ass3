@@ -145,7 +145,6 @@ public class Model {
 	public void createDatabase(String filePath) throws IOException {
 		CharacterDatabase db = new CharacterDatabase(filePath);
 		activeDatabase = db;
-		db.save();
 	}
 
 	/**
